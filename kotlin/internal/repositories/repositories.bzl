@@ -61,13 +61,21 @@ def kotlin_repositories(compiler_release = _KOTLIN_CURRENT_COMPILER_RELEASE):
         compiler_release: (internal) dict containing "urls" and "sha256" for the Kotlin compiler.
     """
     _maven_dependencies()
-    _http_archive(
-        name = _KT_COMPILER_REPO,
-        urls = compiler_release["urls"],
-        sha256 = compiler_release["sha256"],
-        build_file = "@io_bazel_rules_kotlin//kotlin/internal/repositories:BUILD.com_github_jetbrains_kotlin",
-        strip_prefix = "kotlinc",
-    )
+    build_file = "@io_bazel_rules_kotlin//kotlin/internal/repositories:BUILD.com_github_jetbrains_kotlin"
+    if "path" in compiler_release:
+        new_local_repository(
+            name = _KT_COMPILER_REPO,
+            build_file = build_file,
+            path = compiler_release["path"],
+        )
+    else:
+        _http_archive(
+            name = _KT_COMPILER_REPO,
+            urls = compiler_release["urls"],
+            sha256 = compiler_release["sha256"],
+            build_file = build_file,
+            strip_prefix = "kotlinc",
+        )
 
     _http_file(
         name = "kt_java_stub_template",
