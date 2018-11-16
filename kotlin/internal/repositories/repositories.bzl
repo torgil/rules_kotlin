@@ -62,7 +62,7 @@ def kotlin_repositories(compiler_release = _KOTLIN_CURRENT_COMPILER_RELEASE):
     """
     _maven_dependencies()
     build_file = "@io_bazel_rules_kotlin//kotlin/internal/repositories:BUILD.com_github_jetbrains_kotlin"
-    if "path" in compiler_release:
+    if "path" in compiler_release and compiler_release["path"] is not None:
         native.new_local_repository(
             name = _KT_COMPILER_REPO,
             build_file = build_file,
